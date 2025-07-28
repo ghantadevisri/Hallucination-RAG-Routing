@@ -1,0 +1,67 @@
+# Byte-code files
+*.pyc
+__pycache__/
+
+# Virtual environment
+venv/
+.venv/
+env/
+.env/
+
+# Environment variables 
+.env
+
+# Log files
+*.log
+logs/
+*.txt # If you generate temporary text logs, otherwise remove
+
+# Python build artifacts
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Installer files
+*.whl
+*.zip
+
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Jupyter Notebook / IPython
+.ipynb_checkpoints/
+# If you have large output cells that you don't want to track
+.ipynb_metadata/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+
+# Emacs
+*~
+\#*#
+
+
+# macOS
+.DS_Store
+.Trashes
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
