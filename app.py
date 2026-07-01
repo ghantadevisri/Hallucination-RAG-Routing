@@ -9,6 +9,40 @@ from gemini_utils import (
 )
 from retrieval import search_google_cse
 
+import re
+
+def compute_complexity(sentence):
+    words = sentence.split()
+    word_score = len(words) / 30
+    claim_words = ["is", "was", "are", "were", "percent",
+                   "million", "billion", "founded", "invented",
+                   "discovered", "born", "died"]
+    claim_count = sum(1 for w in words if w.lower() in claim_words)
+    claim_score = claim_count / 5
+    score = min(0.6 * word_score + 0.4 * claim_score, 1.0)
+    return score
+
+def has_risky_pattern(sentence):
+    has_number = bool(re.search(r'\b\d+\b', sentence))
+    words = sentence.split()
+    has_proper_noun = any(
+        w[0].isupper() for i, w in enumerate(words) if i > 0 and w.strip('.,!?').isalpha()
+    )
+    return has_number or has_proper_noun
+
+def assign_tier(sentence):
+    score = compute_complexity(sentence)
+    risky = has_risky_pattern(sentence)
+    if score < 0.3:
+        tier = "light"
+    elif score < 0.6:
+        tier = "medium"
+    else:
+        tier = "heavy"
+    if risky and tier == "light":
+        tier = "medium"
+    return tier, score, risky
+
 # --- Page Configuration ---
 st.set_page_config(
     page_title="Active RAG Chat",
@@ -109,25 +143,29 @@ def run_generation_pipeline(question, placeholder):
         live_log_area = st.empty() 
         live_log_area.markdown("⚙️ *Starting thinking process...*")
 
-        for i in range(10): # Keeping 10 iterations for demonstration
+        for i in range(3): # Keeping 3 iterations for demonstration
             thinking_log += f"\nStep {i+1}\n\n" 
             
-            time.sleep(2) 
+            time.sleep(13) 
             sentence = generate_next_sentence(final_answer, question)
             if sentence.lower() == "none":
                 thinking_log += "<div class='st-success-box'>✅ Answer generation complete.</div>"
                 live_log_area.markdown(thinking_log, unsafe_allow_html=True)
                 break
-            
+            tier, score, risky = assign_tier(sentence)
             thinking_log += f"<div class='st-info-box'>ℹ️ <b>Generated:</b> \"{sentence}\"</div>"
             live_log_area.markdown(thinking_log + "⚙️ *Processing...*", unsafe_allow_html=True)
 
-            time.sleep(2)
+            time.sleep(13)
             concepts = extract_keywords(sentence)
             thinking_log += f"<b>Concepts:</b> `{', '.join(concepts)}`\n\n" 
             live_log_area.markdown(thinking_log + "⚙️ *Processing...*", unsafe_allow_html=True)
             
-            time.sleep(2)
+            time.sleep(13)
+            if tier == "light":
+              concepts = concepts[:1]
+            elif tier == "medium":
+              concepts = concepts[:3]
             questions = generate_questions(concepts, sentence)
             thinking_log += "<b>Validation Questions:</b>\n"
             for q in questions:
@@ -137,7 +175,7 @@ def run_generation_pipeline(question, placeholder):
 
             facts_collected = {}
             for q in questions:
-                time.sleep(2)
+                time.sleep(13)
                 search_results = search_google_cse(q)
                 
                 if search_results:
@@ -151,7 +189,7 @@ def run_generation_pipeline(question, placeholder):
                     thinking_log += f"<div class='st-warning-box'>? <b>No Results:</b> {q}</div>"
                 live_log_area.markdown(thinking_log + "⚙️ *Processing...*", unsafe_allow_html=True)
             
-            time.sleep(2)
+            time.sleep(13)
             updated_sentence = recheck(facts_collected, question, sentence)
             final_answer += updated_sentence + " "
             live_log_area.markdown(thinking_log + "⚙️ *Processing...*", unsafe_allow_html=True)

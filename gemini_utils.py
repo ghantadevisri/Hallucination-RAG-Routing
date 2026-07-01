@@ -9,10 +9,10 @@ load_dotenv()
 
 # Two models with separate API keys
 genai.configure(api_key=os.getenv("GEMINI_API_1"))
-model_generate = genai.GenerativeModel("gemini-2.0-flash-lite")
+model_generate = genai.GenerativeModel("gemini-2.5-flash")
 
 genai.configure(api_key=os.getenv("GEMINI_API_2"))
-model_validate = genai.GenerativeModel("gemini-2.0-flash-lite")
+model_validate = genai.GenerativeModel("gemini-2.5-flash")
 
 
 def generate_next_sentence(context: str, question: str) -> str:
