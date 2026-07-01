@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Active RAG Chat with Hallucination Mitigation
 
 ## Project Overview
@@ -121,3 +122,7 @@ To replicate the evaluation of the Active RAG pipeline:
     python -m testingWikiHowNFQA.wikiHow
     ```
     This script will load a subset of the WikiHowNFQA dataset, run the `active_generate` pipeline for each question, and print evaluation metrics (ROUGE-L, BERTScore) comparing the original and corrected answers against the reference answers. Be aware of potential rate limits from API calls during extensive evaluation.
+=======
+# Hallucination-RAG-Routing
+Complexity-based validation routing layer for hallucination correction — IIIT Nagpur internship
+>>>>>>> 528991dfde8b8885af9a0e80601ea6400bfe387d
