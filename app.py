@@ -45,8 +45,8 @@ def assign_tier(sentence):
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title="Active RAG Chat",
-    page_icon="🤖",
+    page_title="Complexity-Routed RAG",
+    page_icon="🧠",
     layout="centered"
 )
 
@@ -77,7 +77,8 @@ st.markdown("""
     .final-answer-box {
         white-space: normal;          
         overflow-wrap: break-word;    
-        background-color: #262730;    
+        background-color: #ffffff;
+        color: #000000;
         padding: 1rem;                
         border-radius: 0.5rem;        
         margin-top: 1rem;             
@@ -114,7 +115,7 @@ st.markdown("""
 
 
 # --- App Title and Description ---
-st.title("Active RAG Chat")
+st.title("Complexity-Routed RAG")
 st.markdown("Enter a question below. The AI will provide a validated answer. You can expand the dropdown in its response to see how it 'thinks'.")
 st.divider()
 
