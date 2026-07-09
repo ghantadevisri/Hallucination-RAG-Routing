@@ -147,22 +147,22 @@ def run_generation_pipeline(question, placeholder):
         for i in range(3): # Keeping 3 iterations for demonstration
             thinking_log += f"\nStep {i+1}\n\n" 
             
-            time.sleep(13) 
+            time.sleep(10) 
             sentence = generate_next_sentence(final_answer, question)
             if sentence.lower() == "none":
                 thinking_log += "<div class='st-success-box'>✅ Answer generation complete.</div>"
                 live_log_area.markdown(thinking_log, unsafe_allow_html=True)
                 break
             tier, score, risky = assign_tier(sentence)
-            thinking_log += f"<div class='st-info-box'>ℹ️ <b>Generated:</b> \"{sentence}\"</div>"
+            thinking_log += f"<div class='st-info-box'>ℹ️ <b>Generated:</b> \"{sentence}\"<br><b>Tier:</b> {tier} | <b>Score:</b>        {score:.2f} | <b>Risky:</b> {risky}</div>"
             live_log_area.markdown(thinking_log + "⚙️ *Processing...*", unsafe_allow_html=True)
 
-            time.sleep(13)
+            time.sleep(10)
             concepts = extract_keywords(sentence)
             thinking_log += f"<b>Concepts:</b> `{', '.join(concepts)}`\n\n" 
             live_log_area.markdown(thinking_log + "⚙️ *Processing...*", unsafe_allow_html=True)
             
-            time.sleep(13)
+            time.sleep(10)
             if tier == "light":
               concepts = concepts[:1]
             elif tier == "medium":
@@ -176,7 +176,7 @@ def run_generation_pipeline(question, placeholder):
 
             facts_collected = {}
             for q in questions:
-                time.sleep(13)
+                time.sleep(10)
                 search_results = search_google_cse(q)
                 
                 if search_results:
@@ -190,7 +190,7 @@ def run_generation_pipeline(question, placeholder):
                     thinking_log += f"<div class='st-warning-box'>? <b>No Results:</b> {q}</div>"
                 live_log_area.markdown(thinking_log + "⚙️ *Processing...*", unsafe_allow_html=True)
             
-            time.sleep(13)
+            time.sleep(10)
             updated_sentence = recheck(facts_collected, question, sentence)
             final_answer += updated_sentence + " "
             live_log_area.markdown(thinking_log + "⚙️ *Processing...*", unsafe_allow_html=True)
