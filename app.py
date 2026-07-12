@@ -139,6 +139,7 @@ def run_generation_pipeline(question, placeholder):
     """
     final_answer = ""
     thinking_log = ""
+    api_call_count = 0
     
     with placeholder.expander("Thinking process...", expanded=True):
         live_log_area = st.empty() 
@@ -149,6 +150,7 @@ def run_generation_pipeline(question, placeholder):
             
             time.sleep(10) 
             sentence = generate_next_sentence(final_answer, question)
+            api_call_count += 1
             if sentence.lower() == "none":
                 thinking_log += "<div class='st-success-box'>✅ Answer generation complete.</div>"
                 live_log_area.markdown(thinking_log, unsafe_allow_html=True)
@@ -159,6 +161,7 @@ def run_generation_pipeline(question, placeholder):
 
             time.sleep(10)
             concepts = extract_keywords(sentence)
+            api_call_count += 1
             thinking_log += f"<b>Concepts:</b> `{', '.join(concepts)}`\n\n" 
             live_log_area.markdown(thinking_log + "⚙️ *Processing...*", unsafe_allow_html=True)
             
@@ -168,6 +171,7 @@ def run_generation_pipeline(question, placeholder):
             elif tier == "medium":
               concepts = concepts[:3]
             questions = generate_questions(concepts, sentence)
+            api_call_count += 1
             thinking_log += "<b>Validation Questions:</b>\n"
             for q in questions:
                 thinking_log += f"- _{q}_\n"
@@ -178,6 +182,7 @@ def run_generation_pipeline(question, placeholder):
             for q in questions:
                 time.sleep(10)
                 search_results = search_google_cse(q)
+                api_call_count += 1
                 
                 if search_results:
                     validation = validate_with_retrieval(q, search_results)
@@ -192,9 +197,11 @@ def run_generation_pipeline(question, placeholder):
             
             time.sleep(10)
             updated_sentence = recheck(facts_collected, question, sentence)
+            api_call_count += 1
             final_answer += updated_sentence + " "
             live_log_area.markdown(thinking_log + "⚙️ *Processing...*", unsafe_allow_html=True)
     
+    thinking_log += f"<div class='st-success-box'>📊 <b>Total API calls used: {api_call_count}</b></div>"
     return final_answer.strip(), thinking_log
 
 
